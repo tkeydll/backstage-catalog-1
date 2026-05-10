@@ -5,8 +5,7 @@ param addressPrefix string = '${{ values.addressPrefix }}'
 param subnetPrefix string = '${{ values.subnetPrefix }}'
 param vmName string = '${{ values.vmName }}'
 param adminUsername string = '${{ values.adminUsername }}'
-@secure()
-param adminPassword string
+param adminSshPublicKey string = '${{ values.adminSshPublicKey }}'
 
 module network '../../../shared/modules/network.bicep' = {
   name: 'baseline-network'
@@ -26,7 +25,7 @@ module vm '../../../shared/modules/vm.bicep' = {
     location: location
     subnetId: network.outputs.subnetId
     adminUsername: adminUsername
-    adminPassword: adminPassword
+    adminSshPublicKey: adminSshPublicKey
   }
 }
 

@@ -14,8 +14,8 @@
     "adminUsername": {
       "value": "${{ values.adminUsername }}"
     },
-    "adminPassword": {
-      "value": "<set-at-deploy-time>"
+    "adminSshPublicKey": {
+      "value": "${{ values.adminSshPublicKey }}"
     }
   }
 }

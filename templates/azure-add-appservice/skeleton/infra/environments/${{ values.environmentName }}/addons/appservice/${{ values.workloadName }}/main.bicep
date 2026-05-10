@@ -1,7 +1,9 @@
 param location string = '${{ values.location }}'
 param appServicePlanName string = '${{ values.appServicePlanName }}'
 param webAppName string = '${{ values.webAppName }}'
-param planSkuName string = 'B1'
+param planSkuName string = '${{ values.planSkuName }}'
+param planSkuTier string = '${{ values.planSkuTier }}'
+param linuxFxVersion string = '${{ values.linuxFxVersion }}'
 
 module appPlan '../../../../../shared/modules/appservice-plan.bicep' = {
   name: 'app-plan-${{ values.workloadName }}'
@@ -9,6 +11,7 @@ module appPlan '../../../../../shared/modules/appservice-plan.bicep' = {
     planName: appServicePlanName
     location: location
     skuName: planSkuName
+    skuTier: planSkuTier
   }
 }
 
@@ -18,6 +21,7 @@ module webApp '../../../../../shared/modules/appservice-webapp.bicep' = {
     webAppName: webAppName
     location: location
     serverFarmId: appPlan.outputs.planId
+    linuxFxVersion: linuxFxVersion
   }
 }
 

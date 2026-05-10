@@ -10,9 +10,8 @@ param subnetId string
 @description('Admin username')
 param adminUsername string
 
-@description('Admin password')
-@secure()
-param adminPassword string
+@description('Admin SSH public key')
+param adminSshPublicKey string
 
 @description('VM size')
 param vmSize string = 'Standard_B2s'
@@ -45,9 +44,16 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
     osProfile: {
       computerName: vmName
       adminUsername: adminUsername
-      adminPassword: adminPassword
       linuxConfiguration: {
-        disablePasswordAuthentication: false
+        disablePasswordAuthentication: true
+        ssh: {
+          publicKeys: [
+            {
+              path: '/home/${adminUsername}/.ssh/authorized_keys'
+              keyData: adminSshPublicKey
+            }
+          ]
+        }
       }
     }
     storageProfile: {

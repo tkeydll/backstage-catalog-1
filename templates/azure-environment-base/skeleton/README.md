@@ -27,4 +27,4 @@ az deployment group create \
   --parameters @infra/environments/${{ values.environmentName }}/base/main.parameters.example.json
 ```
 
-> Replace admin password parameter values securely at deploy time. Do not commit real secrets.
+> Pass `adminSshPublicKey` at deploy time if you do not store it in parameters files.

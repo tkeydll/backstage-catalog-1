@@ -23,6 +23,7 @@ spec:
         - location
         - resourceGroupName
         - adminUsername
+        - adminSshPublicKey
       properties:
         environmentName:
           type: string
@@ -54,6 +55,10 @@ spec:
           type: string
           title: VM Admin Username
           default: azureuser
+        adminSshPublicKey:
+          type: string
+          title: VM Admin SSH Public Key
+          description: SSH public key for Linux VM admin access
         owner:
           type: string
           title: Catalog Owner
@@ -85,6 +90,7 @@ spec:
           location: ${{ parameters.location }}
           resourceGroupName: ${{ parameters.resourceGroupName }}
           adminUsername: ${{ parameters.adminUsername }}
+          adminSshPublicKey: ${{ parameters.adminSshPublicKey }}
           owner: ${{ parameters.owner }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 

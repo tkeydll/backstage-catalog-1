@@ -8,11 +8,17 @@
     "appServicePlanName": {
       "value": "${{ values.appServicePlanName }}"
     },
+    "planSkuName": {
+      "value": "${{ values.planSkuName }}"
+    },
+    "planSkuTier": {
+      "value": "${{ values.planSkuTier }}"
+    },
     "webAppName": {
       "value": "${{ values.webAppName }}"
     },
-    "planSkuName": {
-      "value": "B1"
+    "linuxFxVersion": {
+      "value": "${{ values.linuxFxVersion }}"
     }
   }
 }

@@ -35,10 +35,26 @@ spec:
           type: string
           title: App Service Plan Name
           pattern: '^[-a-zA-Z0-9]{2,40}$'
+        planSkuName:
+          type: string
+          title: App Service Plan SKU Name
+          default: B1
+        planSkuTier:
+          type: string
+          title: App Service Plan SKU Tier
+          default: Basic
+          enum:
+            - Basic
+            - Standard
+            - PremiumV2
         webAppName:
           type: string
           title: Web App Name
           pattern: '^[-a-z0-9]{2,60}$'
+        linuxFxVersion:
+          type: string
+          title: Linux Runtime Stack
+          default: DOTNETCORE|8.0
         location:
           type: string
           title: Azure Region
@@ -77,7 +93,10 @@ spec:
           environmentName: ${{ parameters.environmentName }}
           workloadName: ${{ parameters.workloadName }}
           appServicePlanName: ${{ parameters.appServicePlanName }}
+          planSkuName: ${{ parameters.planSkuName }}
+          planSkuTier: ${{ parameters.planSkuTier }}
           webAppName: ${{ parameters.webAppName }}
+          linuxFxVersion: ${{ parameters.linuxFxVersion }}
           location: ${{ parameters.location }}
           resourceGroupName: ${{ parameters.resourceGroupName }}
           owner: ${{ parameters.owner }}

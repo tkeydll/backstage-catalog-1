@@ -7,6 +7,9 @@ param location string
 @description('App Service plan id')
 param serverFarmId string
 
+@description('Linux runtime stack, for example DOTNETCORE|8.0 or NODE|20-lts')
+param linuxFxVersion string = 'DOTNETCORE|8.0'
+
 resource webApp 'Microsoft.Web/sites@2023-12-01' = {
   name: webAppName
   location: location
@@ -15,7 +18,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
     serverFarmId: serverFarmId
     httpsOnly: true
     siteConfig: {
-      linuxFxVersion: 'DOTNETCORE|8.0'
+      linuxFxVersion: linuxFxVersion
       minTlsVersion: '1.2'
     }
   }

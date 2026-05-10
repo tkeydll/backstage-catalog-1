@@ -2,8 +2,7 @@ param location string = '${{ values.location }}'
 param vmName string = '${{ values.vmName }}'
 param subnetId string = '${{ values.subnetResourceId }}'
 param adminUsername string = '${{ values.adminUsername }}'
-@secure()
-param adminPassword string
+param adminSshPublicKey string = '${{ values.adminSshPublicKey }}'
 
 module vm '../../../../../shared/modules/vm.bicep' = {
   name: 'vm-addon-${{ values.workloadName }}'
@@ -12,7 +11,7 @@ module vm '../../../../../shared/modules/vm.bicep' = {
     location: location
     subnetId: subnetId
     adminUsername: adminUsername
-    adminPassword: adminPassword
+    adminSshPublicKey: adminSshPublicKey
   }
 }
 
