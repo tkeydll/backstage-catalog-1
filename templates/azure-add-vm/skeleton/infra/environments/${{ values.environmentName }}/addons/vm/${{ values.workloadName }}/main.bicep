@@ -1,0 +1,19 @@
+param location string = '${{ values.location }}'
+param vmName string = '${{ values.vmName }}'
+param subnetId string = '${{ values.subnetResourceId }}'
+param adminUsername string = '${{ values.adminUsername }}'
+@secure()
+param adminPassword string
+
+module vm '../../../../../shared/modules/vm.bicep' = {
+  name: 'vm-addon-${{ values.workloadName }}'
+  params: {
+    vmName: vmName
+    location: location
+    subnetId: subnetId
+    adminUsername: adminUsername
+    adminPassword: adminPassword
+  }
+}
+
+output vmId string = vm.outputs.vmId

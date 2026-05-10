@@ -1,0 +1,114 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: azure-environment-base
+  title: Azure Environment Base (Bicep)
+  description: Scaffold a baseline Azure environment repo layout with base network and VM Bicep artifacts
+  tags:
+    - azure
+    - bicep
+    - infrastructure
+    - baseline
+spec:
+  owner: group:default/platform-team
+  type: infrastructure
+
+  parameters:
+    - title: Environment Details
+      required:
+        - environmentName
+        - location
+        - resourceGroupName
+        - vmName
+        - adminUsername
+      properties:
+        environmentName:
+          type: string
+          title: Environment Name
+          description: Shared environment identifier (for example dev-shared)
+          pattern: '^[-a-z0-9]{2,30}$'
+        location:
+          type: string
+          title: Azure Region
+          default: japaneast
+          enum:
+            - japaneast
+            - eastus
+            - westeurope
+        resourceGroupName:
+          type: string
+          title: Resource Group Name
+          description: Existing target resource group for incremental deployments
+        addressPrefix:
+          type: string
+          title: VNET Address Prefix
+          default: 10.40.0.0/16
+        subnetPrefix:
+          type: string
+          title: VM Subnet Prefix
+          default: 10.40.1.0/24
+        vmName:
+          type: string
+          title: Baseline VM Name
+          pattern: '^[-a-zA-Z0-9]{2,15}$'
+        adminUsername:
+          type: string
+          title: VM Admin Username
+          default: azureuser
+        owner:
+          type: string
+          title: Catalog Owner
+          default: group:default/platform-team
+
+    - title: Repository Details
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: fetchBase
+      name: Scaffold base environment files
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          environmentName: ${{ parameters.environmentName }}
+          location: ${{ parameters.location }}
+          resourceGroupName: ${{ parameters.resourceGroupName }}
+          addressPrefix: ${{ parameters.addressPrefix }}
+          subnetPrefix: ${{ parameters.subnetPrefix }}
+          vmName: ${{ parameters.vmName }}
+          adminUsername: ${{ parameters.adminUsername }}
+          owner: ${{ parameters.owner }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+        description: Azure shared environment baseline for ${{ parameters.environmentName }}
+        allowedHosts:
+          - github.com
+
+    - id: register
+      name: Register catalog entity
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in Catalog
+        entityRef: ${{ steps.register.output.entityRef }}
