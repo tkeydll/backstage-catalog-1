@@ -1,11 +1,10 @@
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: azure-${{ values.environmentName }}-vm-${{ values.workloadName }}
-  description: Azure VM add-on for existing environment ${{ values.environmentName }}
-  annotations:
-    github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
-spec:
-  type: infrastructure
-  owner: ${{ values.owner }}
-  lifecycle: experimental
+# Intentionally left without a Backstage entity.
+#
+# This add-on is designed to be merged into an existing environment repository.
+# Generating a root `catalog-info.yaml` here would overwrite the base
+# environment repository's root catalog file and can break catalog registration
+# for the existing environment.
+#
+# If this add-on needs Backstage registration, add a separate catalog file under
+# an add-on-specific path and update the environment repository's existing root
+# catalog configuration to reference it.
