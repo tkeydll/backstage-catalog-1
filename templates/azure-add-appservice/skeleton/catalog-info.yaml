@@ -1,0 +1,9 @@
+# Intentionally left without a Backstage entity.
+#
+# This add-on skeleton is merged into an existing environment repository.
+# Generating a root `catalog-info.yaml` here would overwrite the environment
+# repository's existing root catalog descriptor and can remove its catalog
+# registration.
+#
+# Add-on catalog metadata must be defined in an add-on-specific path instead
+# of at the repository root.

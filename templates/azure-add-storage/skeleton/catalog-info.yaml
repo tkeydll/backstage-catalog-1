@@ -1,0 +1,3 @@
+# This add-on intentionally does not generate a root catalog-info.yaml.
+# The target environment repository already owns the root catalog entity,
+# and writing one from this add-on would overwrite that registration.

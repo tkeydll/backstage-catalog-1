@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: azure-${{ values.environmentName }}-infra
+  description: Shared Azure infrastructure baseline for ${{ values.environmentName }}
+  annotations:
+    github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
+spec:
+  type: infrastructure
+  owner: ${{ values.owner }}
+  lifecycle: experimental

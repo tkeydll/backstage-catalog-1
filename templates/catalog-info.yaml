@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: azure-infra-template-set
+  description: Backstage self-service Azure Bicep template set (base + add-ons)
+spec:
+  type: url
+  targets:
+    - ./azure-environment-base/template.yaml
+    - ./azure-add-storage/template.yaml
+    - ./azure-add-appservice/template.yaml
+    - ./azure-add-vm/template.yaml

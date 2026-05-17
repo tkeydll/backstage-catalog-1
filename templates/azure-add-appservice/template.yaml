@@ -1,0 +1,119 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: azure-add-appservice-existing-environment
+  title: Azure Add App Service to Existing Environment
+  description: Scaffold app service Bicep add-on files for an existing shared environment/resource group
+  tags:
+    - azure
+    - bicep
+    - infrastructure
+    - appservice
+spec:
+  owner: group:default/platform-team
+  type: infrastructure
+
+  parameters:
+    - title: Add-on Details
+      required:
+        - environmentName
+        - workloadName
+        - appServicePlanName
+        - webAppName
+        - location
+        - resourceGroupName
+      properties:
+        environmentName:
+          type: string
+          title: Existing Environment Name
+          pattern: '^[-a-z0-9]{2,30}$'
+        workloadName:
+          type: string
+          title: Add-on Workload Name
+          pattern: '^[-a-z0-9]{2,30}$'
+        appServicePlanName:
+          type: string
+          title: App Service Plan Name
+          pattern: '^[-a-zA-Z0-9]{2,40}$'
+        planSkuName:
+          type: string
+          title: App Service Plan SKU Name
+          default: B1
+        planSkuTier:
+          type: string
+          title: App Service Plan SKU Tier
+          default: Basic
+          enum:
+            - Basic
+            - Standard
+            - PremiumV2
+        webAppName:
+          type: string
+          title: Web App Name
+          pattern: '^[-a-z0-9]{2,60}$'
+        linuxFxVersion:
+          type: string
+          title: Linux Runtime Stack
+          default: DOTNETCORE|8.0
+        location:
+          type: string
+          title: Azure Region
+          default: japaneast
+          enum:
+            - japaneast
+            - eastus
+            - westeurope
+        resourceGroupName:
+          type: string
+          title: Existing Resource Group Name
+        owner:
+          type: string
+          title: Catalog Owner
+          default: group:default/platform-team
+
+    - title: Repository Details
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: fetchAddon
+      name: Scaffold app service add-on files
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          environmentName: ${{ parameters.environmentName }}
+          workloadName: ${{ parameters.workloadName }}
+          appServicePlanName: ${{ parameters.appServicePlanName }}
+          planSkuName: ${{ parameters.planSkuName }}
+          planSkuTier: ${{ parameters.planSkuTier }}
+          webAppName: ${{ parameters.webAppName }}
+          linuxFxVersion: ${{ parameters.linuxFxVersion }}
+          location: ${{ parameters.location }}
+          resourceGroupName: ${{ parameters.resourceGroupName }}
+          owner: ${{ parameters.owner }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+
+    - id: publish
+      name: Open Pull Request on Environment Repo
+      action: publish:github:pull-request
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        title: "Add app service add-on: ${{ parameters.workloadName }}"
+        branchName: "add-appservice-${{ parameters.workloadName }}-${{ parameters.environmentName }}"
+        description: |
+          Adds app service add-on Bicep files for workload **${{ parameters.workloadName }}**
+          into environment **${{ parameters.environmentName }}** (resource group: `${{ parameters.resourceGroupName }}`).
+
+  output:
+    links:
+      - title: Pull Request
+        url: ${{ steps.publish.output.remoteUrl }}

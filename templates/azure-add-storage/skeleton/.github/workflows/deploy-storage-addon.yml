@@ -1,0 +1,32 @@
+name: Deploy Storage Add-on
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_TENANT_ID: {% raw %}${{ secrets.AZURE_TENANT_ID }}{% endraw %}
+      AZURE_SUBSCRIPTION_ID: {% raw %}${{ secrets.AZURE_SUBSCRIPTION_ID }}{% endraw %}
+      AZURE_CLIENT_ID: {% raw %}${{ secrets.AZURE_CLIENT_ID }}{% endraw %}
+      AZURE_RESOURCE_GROUP: ${{ values.resourceGroupName }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/login@v2
+        with:
+          tenant-id: {% raw %}${{ env.AZURE_TENANT_ID }}{% endraw %}
+          subscription-id: {% raw %}${{ env.AZURE_SUBSCRIPTION_ID }}{% endraw %}
+          client-id: {% raw %}${{ env.AZURE_CLIENT_ID }}{% endraw %}
+
+      - name: Deploy storage add-on
+        run: |
+          az deployment group create \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --template-file "infra/environments/${{ values.environmentName }}/addons/storage/${{ values.workloadName }}/main.bicep"

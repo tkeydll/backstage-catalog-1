@@ -1,0 +1,111 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: azure-add-vm-existing-environment
+  title: Azure Add VM to Existing Environment
+  description: Scaffold VM Bicep add-on files for an existing shared environment/resource group
+  tags:
+    - azure
+    - bicep
+    - infrastructure
+    - vm
+spec:
+  owner: group:default/platform-team
+  type: infrastructure
+
+  parameters:
+    - title: Add-on Details
+      required:
+        - environmentName
+        - workloadName
+        - vmName
+        - subnetResourceId
+        - location
+        - resourceGroupName
+        - adminUsername
+        - adminSshPublicKey
+      properties:
+        environmentName:
+          type: string
+          title: Existing Environment Name
+          pattern: '^[-a-z0-9]{2,30}$'
+        workloadName:
+          type: string
+          title: Add-on Workload Name
+          pattern: '^[-a-z0-9]{2,30}$'
+        vmName:
+          type: string
+          title: VM Name
+          pattern: '^[-a-zA-Z0-9]{2,15}$'
+        subnetResourceId:
+          type: string
+          title: Existing Subnet Resource ID
+        location:
+          type: string
+          title: Azure Region
+          default: japaneast
+          enum:
+            - japaneast
+            - eastus
+            - westeurope
+        resourceGroupName:
+          type: string
+          title: Existing Resource Group Name
+        adminUsername:
+          type: string
+          title: VM Admin Username
+          default: azureuser
+        adminSshPublicKey:
+          type: string
+          title: VM Admin SSH Public Key
+          description: SSH public key for Linux VM admin access
+        owner:
+          type: string
+          title: Catalog Owner
+          default: group:default/platform-team
+
+    - title: Repository Details
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: fetchAddon
+      name: Scaffold VM add-on files
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          environmentName: ${{ parameters.environmentName }}
+          workloadName: ${{ parameters.workloadName }}
+          vmName: ${{ parameters.vmName }}
+          subnetResourceId: ${{ parameters.subnetResourceId }}
+          location: ${{ parameters.location }}
+          resourceGroupName: ${{ parameters.resourceGroupName }}
+          adminUsername: ${{ parameters.adminUsername }}
+          adminSshPublicKey: ${{ parameters.adminSshPublicKey }}
+          owner: ${{ parameters.owner }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+
+    - id: publish
+      name: Open Pull Request on Environment Repo
+      action: publish:github:pull-request
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        title: "Add VM add-on: ${{ parameters.workloadName }}"
+        branchName: "add-vm-${{ parameters.workloadName }}-${{ parameters.environmentName }}"
+        description: |
+          Adds VM add-on Bicep files for workload **${{ parameters.workloadName }}**
+          into environment **${{ parameters.environmentName }}** (resource group: `${{ parameters.resourceGroupName }}`).
+
+  output:
+    links:
+      - title: Pull Request
+        url: ${{ steps.publish.output.remoteUrl }}

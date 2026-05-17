@@ -1,0 +1,10 @@
+# Intentionally left without a Backstage entity.
+#
+# This add-on is designed to be merged into an existing environment repository.
+# Generating a root `catalog-info.yaml` here would overwrite the base
+# environment repository's root catalog file and can break catalog registration
+# for the existing environment.
+#
+# If this add-on needs Backstage registration, add a separate catalog file under
+# an add-on-specific path and update the environment repository's existing root
+# catalog configuration to reference it.
