@@ -95,25 +95,17 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
     - id: publish
-      name: Publish to GitHub
-      action: publish:github
+      name: Open Pull Request on Environment Repo
+      action: publish:github:pull-request
       input:
         repoUrl: ${{ parameters.repoUrl }}
-        defaultBranch: main
-        description: Azure VM add-on for ${{ parameters.environmentName }}
-        allowedHosts:
-          - github.com
-
-    - id: register
-      name: Register catalog entity
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        catalogInfoPath: /catalog-info.yaml
+        title: "Add VM add-on: ${{ parameters.workloadName }}"
+        branchName: "add-vm-${{ parameters.workloadName }}-${{ parameters.environmentName }}"
+        description: |
+          Adds VM add-on Bicep files for workload **${{ parameters.workloadName }}**
+          into environment **${{ parameters.environmentName }}** (resource group: `${{ parameters.resourceGroupName }}`).
 
   output:
     links:
-      - title: Repository
+      - title: Pull Request
         url: ${{ steps.publish.output.remoteUrl }}
-      - title: Open in Catalog
-        entityRef: ${{ steps.register.output.entityRef }}
