@@ -1,11 +1,3 @@
-apiVersion: backstage.io/v1alpha1
-kind: Component
-metadata:
-  name: azure-${{ values.environmentName }}-storage-${{ values.workloadName }}
-  description: Azure storage add-on for existing environment ${{ values.environmentName }}
-  annotations:
-    github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
-spec:
-  type: infrastructure
-  owner: ${{ values.owner }}
-  lifecycle: experimental
+# This add-on intentionally does not generate a root catalog-info.yaml.
+# The target environment repository already owns the root catalog entity,
+# and writing one from this add-on would overwrite that registration.
