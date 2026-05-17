@@ -11,19 +11,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_TENANT_ID: {% raw %}${{ secrets.AZURE_TENANT_ID }}{% endraw %}
+      AZURE_SUBSCRIPTION_ID: {% raw %}${{ secrets.AZURE_SUBSCRIPTION_ID }}{% endraw %}
+      AZURE_CLIENT_ID: {% raw %}${{ secrets.AZURE_CLIENT_ID }}{% endraw %}
+      AZURE_RESOURCE_GROUP: {% raw %}${{ vars.AZURE_RESOURCE_GROUP }}{% endraw %}
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: azure/login@v2
         with:
-          tenant-id: ${{ env.AZURE_TENANT_ID }}
-          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: {% raw %}${{ env.AZURE_TENANT_ID }}{% endraw %}
+          subscription-id: {% raw %}${{ env.AZURE_SUBSCRIPTION_ID }}{% endraw %}
+          client-id: {% raw %}${{ env.AZURE_CLIENT_ID }}{% endraw %}
 
       - name: Deploy storage add-on
         run: |
